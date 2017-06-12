@@ -1,11 +1,13 @@
 ﻿//Shader模块定义
-Shader "xiaolezi/Half Lambert Lighting Model Per-Fragment Shader"
+Shader "xiaolezi/Phong Lighting Model Shader"
 {
 	//属性设置
 	Properties
 	{
 		//定义一个物体表面颜色,格式：[属性名]([Inspector面板显示名字],属性类型)=[初始值]
 		_DiffuseColor("Diffuse Color", Color) = (1, 1, 1, 1)
+		_Glossness("Glossness", Range(8, 256)) = 20
+		_SpecularColor("Specular Color", Color) = (1, 1, 1, 1)
 	}
 	//第一个SubShader块
 	SubShader
@@ -42,6 +44,9 @@ Shader "xiaolezi/Half Lambert Lighting Model Per-Fragment Shader"
 				};
 				//从属性模块中取得该变量
 				fixed4 _DiffuseColor;
+				float _Glossness;
+				fixed4 _SpecularColor;
+
 				//顶点着色器函数实现
 				v2f vert(appdata v)
 				{
@@ -56,15 +61,23 @@ Shader "xiaolezi/Half Lambert Lighting Model Per-Fragment Shader"
 				{
 					fixed3 normalDir = normalize(UnityObjectToWorldNormal(f.normal));	//计算世界法线方向
 					fixed3 lightDir = normalize(ObjSpaceLightDir(f.vertex));			//计算灯光方向
+					fixed3 viewDir = normalize(ObjSpaceViewDir(f.vertex));//计算观察方向
 
+					//环境光
+					fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
+					//漫反色
 					float Lambert = 0.5 * dot(normalDir, lightDir) + 0.5;//兰伯特值
 					fixed3 diffuse = _LightColor0.rgb * _DiffuseColor.rgb * Lambert;	//计算漫反色
-					return fixed4(diffuse, 1.0);
+					//高光
+					fixed3 reflectDir = normalize(reflect(-lightDir, normalDir));//根据物体表面法线计算光的反射光方向
+					fixed3 specular = _LightColor0.rgb * _SpecularColor.rgb * pow(max(0, dot(reflectDir, viewDir)), _Glossness);//Phong氏高光计算
+					
+					return fixed4(ambient + diffuse + specular, 1.0);
 				}
 					//结束CG着色器编辑模块
-					ENDCG
+				ENDCG
 			}
 		}
 
-		Fallback "Diffuse"//默认着色器
+		Fallback "Specular"//默认着色器,这里选择高光
 }
