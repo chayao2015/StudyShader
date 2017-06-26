@@ -8,7 +8,9 @@ Unity3D基础篇----Shader学习笔记（1）
 
 Unity3D基础篇----Shader学习笔记（2） 
 
-Unity3D基础篇----Shader学习笔记（3） 
+Unity3D基础篇----Shader学习笔记（3）  
+
+Unity3D基础篇----Shader学习笔记（4）
 
 ...
 
