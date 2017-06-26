@@ -72,8 +72,12 @@ Shader "xiaolezi/Bump Texture"
 					//	float3x3 rotation = float3x3(v.tangent.xyz, binormal, v.normal);
 					//这里直接使用内置宏 TANGENT_SPACE_ROTATION
 					TANGENT_SPACE_ROTATION;
+
+					//计算切线空间下的灯光方向
 					o.lightDir = normalize(mul(rotation, ObjSpaceLightDir(v.vertex)));
+					//计算切线空间下的观察方向
 					o.viewDir = normalize(mul(rotation, ObjSpaceViewDir(v.vertex)));
+
 					return o;
 				}
 				//片段着色器函数实现
@@ -102,5 +106,5 @@ Shader "xiaolezi/Bump Texture"
 			}
 		}
 
-		Fallback "Specular"//默认着色器,这里选择高光
+		Fallback "Bump Diffuse"//默认着色器,这里选择高光
 }
