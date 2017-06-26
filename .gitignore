@@ -1,1 +1,6 @@
-/mtk/Library
+/Library
+/Temp
+*.csproj
+*.sln
+*.suo
+
