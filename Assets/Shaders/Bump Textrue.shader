@@ -105,6 +105,5 @@ Shader "xiaolezi/Bump Texture"
 					ENDCG
 			}
 		}
-
-		Fallback "Bump Diffuse"//默认着色器,这里选择高光
+		Fallback "Bumped Diffuse"//默认着色器,这里选择高光
 }
